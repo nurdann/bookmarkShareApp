@@ -101,11 +101,14 @@ Create `.gitignore` file
 # .gitignore
 
 node_modules
+package-lock.json
 ```
 
 
-For easier deployment either move React frontend to a subfolder or create new React app in the subfolder; `--template typescript` is optional.
-```
-npx create-react-app client --template typescript
-```
+For easier deployment either move React frontend to the subfolder, .e.g `bookmarkShare/client`.
 
+### dotenv
+
+```
+npm install --save dotenv
+```

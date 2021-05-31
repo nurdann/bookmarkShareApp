@@ -83,10 +83,9 @@ app.get('*', (request, response) => {
 });
 
 
-PORT = 8000;
-app.listen(PORT, (err) => {
+app.listen(process.env.API_PORT, (err) => {
     if(!err) {
-        console.log('Listening on port ' + PORT);
+        console.log('Listening on port ' + process.env.API_PORT);
     } else {
         console.log(err);
     }

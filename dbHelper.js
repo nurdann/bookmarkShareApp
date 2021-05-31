@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 require('./bookmarkModel'); // register 'bookmark' model
-const MONGODB_URI = 'mongodb://bookmarker:password@localhost:27017/bookmarks';
-
+require('dotenv').config();
 
 async function exists(model, URI) {
     const found = await model.findById(URI, '_id').exec();
@@ -68,7 +67,7 @@ async function removeBookmark(model, URI, bookmarkURI) {
 
 
 async function operationWithModel(operation) {
-    const db = mongoose.createConnection(MONGODB_URI, {
+    const db = mongoose.createConnection(process.env.MONGODB_URI, {
         useNewUrlParser: true, 
         useUnifiedTopology: true,
         useFindAndModify: false
