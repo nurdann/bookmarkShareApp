@@ -109,6 +109,22 @@ For easier deployment either move React frontend to the subfolder, .e.g `bookmar
 
 ### dotenv
 
+Install `dotenv` package
 ```
 npm install --save dotenv
+```
+
+Create `.env` file at project root directory; this where we keep API keys.
+```
+# .env
+MONGODB_URI='mongodb://user:password@localhost:27017/bookmarksdb'
+API_PORT='8000'
+```
+
+Initially add `.env` file without credentials to git, then ignore changes to it by adding it to `.gitignore` and running the following command,
+
+```shell
+git add .env
+git commit -m 'Added .env file'
+git update-index --assume-unchanged .env
 ```
