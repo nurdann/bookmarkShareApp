@@ -1,64 +1,10 @@
-import React, { ReactComponentElement, useEffect, useState } from "react";
-
-// Define API helper functions
-
-async function getBookmarksFromUri(bookmarkPage : string) : Promise<string[]> {
-    const result = await fetch(`/api/bookmark/${bookmarkPage}`);
-    if(result?.status === 200) {
-        return await result.json();
-    } else {
-        return [];
-    }
-}
-
-async function addBookmarkToUriAndFetch(bookmarkPage : string, newBookmark : string) : Promise<string[]> {
-    const result = await fetch(`/api/bookmark/${bookmarkPage}/add`, {
-        method: 'POST',
-        body: JSON.stringify({
-            newBookmark: newBookmark
-        }),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-
-    if(result?.status === 200) {
-        return await result.json();
-    } else {
-        return [];
-    }
-}
-
-async function removeBookmarkItemFromUriAndFetch(bookmarkPage : string, rmBookmark : string) : Promise<string[]> {
-    const result = await fetch(`/api/bookmark/${bookmarkPage}/remove-item`, {
-        method: 'POST',
-        body: JSON.stringify({
-            rmBookmark: rmBookmark
-        }),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-
-    if(result?.status === 200) {
-        return await result.json();
-    } else {
-        return [];
-    }
-
-}
-
-async function removeBookmarksFromUri(bookmarkPage : string) : Promise<boolean> {
-    const result = await fetch(`/api/bookmark/${bookmarkPage}/remove`, {
-        method: 'POST'
-    });
-
-    if(result?.status === 200) {
-        return true;
-    } else {
-        return false;
-    }
-}
+import React from 'react';
+import {
+    getBookmarksFromUri,
+    addBookmarkToUriAndFetch,
+    removeBookmarkItemFromUriAndFetch,
+    removeBookmarksFromUri 
+} from './BookmarksHelper';
 
 // Define React Component
 
@@ -82,7 +28,6 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
 
     onSubmitAddBookmark = (event : React.MouseEvent<HTMLElement>) : void => {
         event.preventDefault();
-        console.log(this.state.bookmarkPage);
         const inputElement = document.getElementById('add-bookmark-input') as HTMLInputElement;
         const newBookmark : string = inputElement.value;
         inputElement.value = ''; // Empty input field
@@ -93,7 +38,6 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
 
     removeBookmarkItem = (event : React.MouseEvent<HTMLElement>) : void => {
         event.preventDefault();
-        console.log(this.state.bookmarkPage);
         const element = event.target as HTMLButtonElement;
         if(element) {
             const rmBookmark : string | null = element.getAttribute('data-bookmark');
@@ -107,7 +51,6 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
 
     removeBookmarks = (event : React.MouseEvent<HTMLElement>) : void => {
         event.preventDefault();
-        console.log(this.state.bookmarkPage);
         removeBookmarksFromUri(this.state.bookmarkPage).then(isRemoved => {
             if(isRemoved) {
                 this.setState({bookmarks: []});
