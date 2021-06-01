@@ -7,7 +7,7 @@ const {
     getBookmarks,
     dropBookmarks,
     addBookmark,
-    removeBookmark } = require('./dbHelper');
+    removeBookmarkItem } = require('./dbHelper');
 
 const app = express();
 
@@ -68,9 +68,9 @@ async function removeBookmarksFromURI(request, response) {
 
 async function removeBookmarkItemFromURI(request, response) {
     const uri = request.params.uri;
-    const {newBookmark} = request.body;
+    const {rmBookmark} = request.body;
 
-    const isRemoved = await operationWithModel(async model => await removeBookmark(model, uri, newBookmark));
+    const isRemoved = await operationWithModel(async model => await removeBookmarkItem(model, uri, rmBookmark));
 
     if(isRemoved) {
         fetchBookmarksFromURI(request, response);

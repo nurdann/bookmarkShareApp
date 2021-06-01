@@ -4,10 +4,8 @@ require('dotenv').config();
 
 async function exists(model, URI) {
     const found = await model.findById(URI, '_id').exec();
-    if(found) {
-        return true;
-    }
-    return false;
+
+    return found ? true : false;
 }
 
 async function getBookmarks(model, URI) {
@@ -20,11 +18,8 @@ async function dropBookmarks(model, URI) {
     }
 
     const removed = await model.findByIdAndRemove(URI);
-    if(removed) {
-        return true;
-    } else {
-        return false;
-    }
+
+    return removed ? true : false;
 }
 
 async function addBookmark(model, URI, bookmarkURI) {
@@ -33,23 +28,18 @@ async function addBookmark(model, URI, bookmarkURI) {
             _id: URI,
             bookmarks: [bookmarkURI]
         });
-        if(!created) {
-            return false;
-        }
+
+        return created ? true : false;
      }
 
     const updatedBookmark = await model.findByIdAndUpdate(URI, {
         $push: {bookmarks: bookmarkURI}
         });
 
-    if(updatedBookmark) {
-        return true;
-    } else {
-        return false;
-    }
+    return updatedBookmark ? true : false;
 }
 
-async function removeBookmark(model, URI, bookmarkURI) {
+async function removeBookmarkItem(model, URI, bookmarkURI) {
     if(!await exists(model, URI))  {
         return true;
     }
@@ -58,11 +48,7 @@ async function removeBookmark(model, URI, bookmarkURI) {
         $pull: {bookmarks: bookmarkURI}
     });
 
-    if(removed) {
-        return true;
-    } else {
-        return false;
-    }
+    return removed ? true : false;
 }
 
 
@@ -86,6 +72,6 @@ module.exports = {
     getBookmarks,
     dropBookmarks,
     addBookmark,
-    removeBookmark,
+    removeBookmarkItem,
     exists
 }
