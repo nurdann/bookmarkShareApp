@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { bookmarkPattern } = require('./bookmarkModel');
 const { 
     exists,
@@ -13,16 +14,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-// This middleware informs the express application to serve our compiled React files
-// Source: https://medium.com/weekly-webtips/create-and-deploy-your-first-react-web-app-with-a-node-js-backend-ec622e0328d7
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
-    app.use(express.static(path.join(__dirname, 'client/build')));
-
-    app.get('*', function (req, res) {
-        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-    });
-};
 
 // Define functions for endpoints
 async function fetchBookmarksFromURI(request, response) {
@@ -88,14 +79,25 @@ app.post(`^/api/bookmark/:uri(${bookmarkPattern})/remove`, removeBookmarksFromUR
 
 app.post(`^/api/bookmark/:uri(${bookmarkPattern})/remove-item`, removeBookmarkItemFromURI);
 
-app.get('*', (request, response) => {
-    response.status(404).json({'message': 'Unknown API call'});
-});
-
-app.listen(process.env.API_PORT, (err) => {
+app.listen(process.env.API_PORT || 8000, (err) => {
     if(!err) {
-        console.log('Listening on port ' + process.env.API_PORT);
+        console.log('Listening on port ' + (process.env.API_PORT || 8000));
     } else {
         console.log(err);
     }
-})
+});
+
+// This middleware informs the express application to serve our compiled React files
+// Source: https://medium.com/weekly-webtips/create-and-deploy-your-first-react-web-app-with-a-node-js-backend-ec622e0328d7
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+    app.use(express.static(path.join(__dirname, 'client/build')));
+
+    app.get('*', function (req, res) {
+        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    });
+}
+
+// Wildcard place at the end
+app.get('*', (request, response) => {
+    response.status(404).json({'message': 'Unknown API call'});
+});

@@ -1,7 +1,9 @@
 
 # Walkthrough for creating React frontend with NodeJS backend
 
-The app was developed on Ubuntu 18.04 machine.
+The app was developed on Ubuntu 18.04 machine. 
+
+Source: https://medium.com/weekly-webtips/create-and-deploy-your-first-react-web-app-with-a-node-js-backend-ec622e0328d7
 
 ## Create react app
 
@@ -127,4 +129,45 @@ Initially add `.env` file without credentials to git, then ignore changes to it 
 git add .env
 git commit -m 'Added .env file'
 git update-index --assume-unchanged .env
+```
+
+#### Encrypt dotenv
+
+## Deploy
+Source: https://www.mongodb.com/blog/post/building-a-nodejs-app-with-mongodb-atlas-and-aws-elastic-container-service-part-1
+
+Source: https://www.mongodb.com/blog/post/building-a-nodejs-app-with-mongodb-atlas-and-aws-elastic-container-service-part-2
+Add the shortcut for command in `package.json`
+```json
+"scripts": {
+  "client:build": "cd client && npm run build"
+}
+```
+
+### Build Docker container 
+
+Create `Dockerfile` at the project root directory,
+```
+# Dockerfile
+FROM  node:alpine
+
+RUN mkdir -p /usr/src/bookmarkShare
+WORKDIR /usr/src/bookmarkShare
+COPY . /usr/src/bookmarkShare/
+
+EXPOSE 3000/tcp
+
+RUN npm ci --only=production
+
+CMD ["npm", "run", "server:production"]
+```
+
+Then run build, the default file is `./Dockerfile`
+```
+docker build -t bookmarkshare .
+```
+
+Then run to test it
+```
+docker run -p 80:3000 bookmarkshare
 ```
