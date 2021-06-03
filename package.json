@@ -2,11 +2,11 @@
   "name": "bookmark-share-backend",
   "version": "1.0.0",
   "scripts": {
-    "server": "nodemon server.js",
-    "start": "API_PORT=3000 NODE_ENV=production nodemon server.js",
-    "client": "cd client && npm start",
     "dev": "concurrently --kill-others-on-fail \"npm run client\" \"npm run server\"",
-    "client:build": "cd client && npm run build"
+    "server": "nodemon server.js",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "start": "API_PORT=3000 NODE_ENV=production nodemon server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
