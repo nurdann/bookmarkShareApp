@@ -6,7 +6,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
-  font-size: min(4vw, 4vh);
 }
 
 code {
@@ -77,9 +76,6 @@ button:focus {
   border-color:rgb(94, 93, 93);
 }
 
-.page-body {
-}
-
 .bookmarks {
   display: block;
 }
@@ -104,6 +100,7 @@ button:focus {
 .bookmark-list {
   list-style: none;
   text-align: left;
+  padding: 0;
 }
 
 .bookmark-list li {
@@ -115,6 +112,8 @@ button:focus {
   display: flex;
   flex-direction: column;
   flex: 1;
+  -ms-word-break: break-all;
+  word-break: break-all;
 }
 
 .button-cluster {
