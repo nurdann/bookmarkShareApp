@@ -5,9 +5,120 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  font-size: min(4vw, 4vh);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.App {
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.nav {
+  text-align: left;
+  margin: .5em .5em 1em .5em;
+}
+.nav a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+
+input[type=text] {
+  padding: .5em 1em;
+  margin: 0 .5em;
+  outline: none;
+  -webkit-transition: border 0.30s ease-in-out;
+  -moz-transition: border 0.30s ease-in-out;
+  -ms-transition: border 0.30s ease-in-out;
+  -o-transition: border 0.30s ease-in-out;
+  transition: border 0.30s ease-in-out;
+  border: none;
+  border-bottom: 3px solid rgb(189, 189, 189);
+}
+
+input[type=text]:focus {
+  outline: none;
+  border-bottom-color: black;
+}
+
+button {
+  border: 3px solid black;
+  padding: .1em 1em;
+  background-color: black;
+  color: white;
+  -webkit-transition: border 0.30s ease-in-out;
+  -moz-transition: border 0.30s ease-in-out;
+  -ms-transition: border 0.30s ease-in-out;
+  -o-transition: border 0.30s ease-in-out;
+  transition: border 0.30s ease-in-out;
+}
+
+button:hover,
+button:focus {
+  outline: none;
+}
+
+button:hover {
+  background-color: white;
+  color: black;
+}
+
+button:focus {
+  border-color:rgb(94, 93, 93);
+}
+
+.page-body {
+}
+
+.bookmarks {
+  display: block;
+}
+
+.icon {
+  display: inline;
+}
+.icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.form-input-button {
+  display: flex;
+  width: 100%;
+}
+
+.form-input-button input {
+  flex: 1;
+}
+
+.bookmark-list {
+  list-style: none;
+  text-align: left;
+}
+
+.bookmark-list li {
+  display: flex;
+  margin-bottom: .5em;
+}
+
+.bookmark-display {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.button-cluster {
+  display: flex;
+  flex-direction: column;
+}
+

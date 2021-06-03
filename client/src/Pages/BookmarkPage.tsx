@@ -2,9 +2,9 @@ import Bookmarks from '../Components/Bookmarks';
 
 const BookmarkPage = () => {
     return (
-        <ul className='bookmarks'>
+        <div className='bookmarks'>
         <Bookmarks />
-        </ul>
+        </div>
     );
 };
 

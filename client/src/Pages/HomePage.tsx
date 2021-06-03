@@ -13,7 +13,7 @@ const HomePage = () => {
 
     return (
         <>
-        <form name='bookmark'>
+        <form name='bookmark' className="form-input-button">
             <input type='text' id='input-bookmark' placeholder='Enter bookmark name...'/>
             <button onClick={forwardToBookmarkPage}>Go</button>
         </form>

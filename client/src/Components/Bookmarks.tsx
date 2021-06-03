@@ -1,4 +1,5 @@
 import React from 'react';
+import TrashIcon from '../Icons/TrashIcon';
 import {
     getBookmarksFromUri,
     addBookmarkToUriAndFetch,
@@ -64,16 +65,24 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
             <form id="add-form" className="form-input-button">
                 <input type="text" id="add-bookmark-input" placeholder="Add bookmark" />
                 <button onClick={this.onSubmitAddBookmark}>Add</button>
+                <button onClick={this.removeBookmarks}>
+                    <TrashIcon />
+                </button>
             </form>
-            <button onClick={this.removeBookmarks}>Remove all bookmarks</button>
-            <ul>
+            
+
+            <ul className="bookmark-list">
                 {this.state.bookmarks.map((bookmark, key) => 
                     <li key={key}>
-                        <div>
-                            <h4>title</h4>
+                        <div className="bookmark-display">
                             <div>{bookmark}</div>
                         </div>
-                        <button onClick={this.removeBookmarkItem} data-bookmark={bookmark}>Delete</button>
+                        <div className="button-cluster">
+                            <button>Copy</button>
+                            <button onClick={this.removeBookmarkItem} data-bookmark={bookmark}>
+                                <TrashIcon />
+                                </button>
+                        </div>
                     </li>
                 )}
             </ul>
