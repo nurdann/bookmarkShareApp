@@ -207,3 +207,13 @@ $ docker push <user-id>.dkr.ecr.us-west-1.amazonaws.com/bookmarkshare
 ```
 
 Source: https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html
+
+### AWS Beanstalk
+
+When specifying buildspec leave the field empty so by default it looks for `buildspec.yml` at the project root directory.
+
+```
+[Container] 2021/06/03 06:13:19 YAML location is /codebuild/output/src233444839/src/buildspec.yml
+[Container] 2021/06/03 06:13:19 Phase complete: DOWNLOAD_SOURCE State: FAILED
+[Container] 2021/06/03 06:13:19 Phase context status code: YAML_FILE_ERROR Message: invalid buildspec `version` specified: 1.0, see documentation
+```
