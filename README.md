@@ -120,7 +120,6 @@ Create `.env` file at project root directory; this where we keep API keys.
 ```
 # .env
 MONGODB_URI='mongodb://user:password@localhost:27017/bookmarksdb'
-API_PORT='8000'
 ```
 
 Initially add `.env` file without credentials to git, then ignore changes to it by adding it to `.gitignore` and running the following command,
@@ -131,20 +130,10 @@ git commit -m 'Added .env file'
 git update-index --assume-unchanged .env
 ```
 
-#### Encrypt dotenv
+For continuous delivery, the better option is to create environment variable on the server side and use it in the application.
 
-## Deploy
-Source: https://www.mongodb.com/blog/post/building-a-nodejs-app-with-mongodb-atlas-and-aws-elastic-container-service-part-1
 
-Source: https://www.mongodb.com/blog/post/building-a-nodejs-app-with-mongodb-atlas-and-aws-elastic-container-service-part-2
-Add the shortcut for command in `package.json`
-```json
-"scripts": {
-  "client:build": "cd client && npm run build"
-}
-```
-
-### Build Docker container
+### Build Docker container (Optional)
 
 Create `Dockerfile` at the project root directory,
 ```
@@ -175,14 +164,6 @@ docker run -p 80:3000 bookmarkshare
 
 ### AWS Beanstalk
 
-When specifying buildspec leave the field empty so by default it looks for `buildspec.yml` at the project root directory.
-
-```
-[Container] 2021/06/03 06:13:19 YAML location is /codebuild/output/src233444839/src/buildspec.yml
-[Container] 2021/06/03 06:13:19 Phase complete: DOWNLOAD_SOURCE State: FAILED
-[Container] 2021/06/03 06:13:19 Phase context status code: YAML_FILE_ERROR Message: invalid buildspec `version` specified: 1.0, see documentation
-```
-
 Based on logs, the default port is 8080 which gets routed to port 80 for public access
 ```
 /var/log/web.stdout.log
@@ -190,4 +171,36 @@ Based on logs, the default port is 8080 which gets routed to port 80 for public 
 Jun  3 19:37:43 ip-172-31-5-220 web: > Elastic-Beanstalk-Sample-App@0.0.1 start /var/app/current
 Jun  3 19:37:43 ip-172-31-5-220 web: > node app.js
 Jun  3 19:37:43 ip-172-31-5-220 web: Server running at http://127.0.0.1:8080/
+```
+
+Create zip file using git for manual upload to Beanstalk. Make sure to not include root directory!
+```
+git archive --format=zip HEAD > app.zip
+```
+
+AWS Beanstalk automatically stars the application with `npm start` command. If you need to apply changes that you made on the server, kill `node` process and it will be automatically restarted,
+
+```
+sudo pkill -f node
+```
+
+The unzipped application is stored on `/var/app/current/`.
+
+To directly connect to AWS Beanstalk terminal, create key pair on Configuration under application environment. Then use the key to connect,
+
+```
+ssh -o 'IdentitiesOnly yes' -i ~/Downloads/key.pem ec2-user@18.444.161.48
+```
+We use `-o` options so that only the specified key is used, otherwise AWS will drop multiple attemps to authenticate. Also use IP address to avoid DNS issues.
+
+
+#### AWS CodePipeline
+
+When specifying buildspec leave the field empty so by default it looks for `buildspec.yml` at the project root directory.
+
+If you get the following error, then change the version line to `version: 0.2`.
+```
+[Container] 2021/06/03 06:13:19 YAML location is /codebuild/output/src233444839/src/buildspec.yml
+[Container] 2021/06/03 06:13:19 Phase complete: DOWNLOAD_SOURCE State: FAILED
+[Container] 2021/06/03 06:13:19 Phase context status code: YAML_FILE_ERROR Message: invalid buildspec `version` specified: 1.0, see documentation
 ```
