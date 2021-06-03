@@ -13,3 +13,9 @@ phases:
     commands:
       - echo Building static files for client...
       - npm run build
+artifacts:
+  files:
+    - server.js
+    - bookmarkModel.js
+    - dbHelper.js
+    - client/build/*
