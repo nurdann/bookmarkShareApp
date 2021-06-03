@@ -6,7 +6,7 @@
     "server": "nodemon server.js",
     "client": "cd client && npm start",
     "build": "cd client && npm run build",
-    "start": "API_PORT=3000 NODE_ENV=production nodemon server.js"
+    "start": "NODE_ENV=production nodemon server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
