@@ -13,7 +13,5 @@ phases:
       - npm run build
 artifacts:
   files:
-    - server.js
-    - bookmarkModel.js
-    - dbHelper.js
-    - client/build/*
+    - ./*
+    - client/build/**/*
