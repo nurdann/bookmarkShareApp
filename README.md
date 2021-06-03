@@ -173,41 +173,6 @@ docker run -p 80:3000 bookmarkshare
 ```
 
 
-### Deploy to AWS ECS
-
-Get Amazon API keys from 'My Security Credentials' > 'Access keys' > 'Create  New Access Key'
-Install `aws`
-```shell
-sudo apt install awscli
-```
-
-Then install `copilot` as shown in https://aws.github.io/copilot-cli/docs/getting-started/install/ 
-
-
-Setup default profile
-```shell
-$ aws configure
-AWS Access Key ID [None]: AKIAI44QH8DHBEXAMPLE
-AWS Secret Access Key [None]: je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY
-Default region name [None]: us-west-1
-Default output format [None]: json
-```
-
-Use aws
-```
-$ aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin <user-id>.dkr.ecr.us-west-1.amazonaws.com
-
-Login Succeeded
-```
-Source: https://docs.aws.amazon.com/AmazonECR/latest/userguide/registry_auth.html
-
-```shell
-$ docker tag bookmarkshare 150123075018.dkr.ecr.us-west-1.amazonaws.com/bookmarkshare
-$ docker push <user-id>.dkr.ecr.us-west-1.amazonaws.com/bookmarkshare
-```
-
-Source: https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html
-
 ### AWS Beanstalk
 
 When specifying buildspec leave the field empty so by default it looks for `buildspec.yml` at the project root directory.
@@ -216,4 +181,13 @@ When specifying buildspec leave the field empty so by default it looks for `buil
 [Container] 2021/06/03 06:13:19 YAML location is /codebuild/output/src233444839/src/buildspec.yml
 [Container] 2021/06/03 06:13:19 Phase complete: DOWNLOAD_SOURCE State: FAILED
 [Container] 2021/06/03 06:13:19 Phase context status code: YAML_FILE_ERROR Message: invalid buildspec `version` specified: 1.0, see documentation
+```
+
+Based on logs, the default port is 8080 which gets routed to port 80 for public access
+```
+/var/log/web.stdout.log
+----------------------------------------
+Jun  3 19:37:43 ip-172-31-5-220 web: > Elastic-Beanstalk-Sample-App@0.0.1 start /var/app/current
+Jun  3 19:37:43 ip-172-31-5-220 web: > node app.js
+Jun  3 19:37:43 ip-172-31-5-220 web: Server running at http://127.0.0.1:8080/
 ```
