@@ -196,7 +196,33 @@ We use `-o` options so that only the specified key is used, otherwise AWS will d
 
 #### AWS CodePipeline
 
-When specifying buildspec leave the field empty so by default it looks for `buildspec.yml` at the project root directory.
+Add github as a source for Codepipeline. When specifying buildspec leave the field empty so by default it looks for `buildspec.yml` at the project root directory.
+
+The `install` commands are run before `build`. The `artifacts` indicates which files to save and deploy after build is finished. The artifacts files are placed under `/var/app/current/` on AWS EC2 server, and launched with `npm start`.
+
+```
+# buildspec.yml
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Installing backend modules...
+      - npm ci --only=production
+      - echo Install frontend modules...
+      - cd client && npm ci
+  build:
+    commands:
+      - echo Building static files for client...
+      - npm run build
+artifacts:
+  files:
+    - ./*
+    - node_modules/**/*
+    - client/build/**/*
+```
+
+**Note**: `**/*` means to recursively select all files
 
 If you get the following error, then change the version line to `version: 0.2`.
 ```
