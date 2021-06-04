@@ -270,4 +270,6 @@ As an additional touch, change title of the website in `public/index.html` and `
 
 ## TO DO
 
+Using `navigator.clipboard` is only available for HTTPS and localhost connections.
+
 Fetch icon and page titles of URI
