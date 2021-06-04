@@ -4,9 +4,9 @@ phases:
   install:
     commands:
       - echo Installing backend modules...
-      - npm ci --only=production
+      - npm install
       - echo Install frontend modules...
-      - cd client && npm ci
+      - cd client && npm install
   build:
     commands:
       - echo Building static files for client...
