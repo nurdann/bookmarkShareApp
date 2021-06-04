@@ -59,6 +59,19 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
         });
     }
 
+    copyBookmarkToClipboard = (event : React.MouseEvent<HTMLElement>) : void => {
+        // source: https://stackoverflow.com/a/30810322/1374078
+        if(!navigator.clipboard) {
+            console.log("navigator is not supported");
+            return;
+        }
+        const element = event.target as HTMLButtonElement;
+        if(element) {
+            const bookmarkText = element.getAttribute('data-bookmark') as string;
+            navigator.clipboard.writeText(bookmarkText);
+        }
+    }
+
     render() {
         return (
         <>
@@ -78,7 +91,7 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
                             <div>{bookmark}</div>
                         </div>
                         <div className="button-cluster">
-                            <button>Copy</button>
+                            <button onClick={this.copyBookmarkToClipboard} data-bookmark={bookmark}>Copy</button>
                             <button onClick={this.removeBookmarkItem} data-bookmark={bookmark}>
                                 <TrashIcon />
                                 </button>
