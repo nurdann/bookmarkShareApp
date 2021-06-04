@@ -1,3 +1,22 @@
+# Local install
+
+Navigate to project folder and run the following commands to install dependencies
+```
+$ npm ci
+$ cd client && npm ci
+```
+
+And start development
+```
+$ npm run dev
+```
+
+To build and deploy
+```
+$ npm run build
+$ npm start
+```
+
 
 # Walkthrough for creating React frontend with NodeJS backend
 
