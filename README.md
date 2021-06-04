@@ -133,6 +133,8 @@ git update-index --assume-unchanged .env
 For continuous delivery, the better option is to create environment variable on the server side and use it in the application.
 
 
+That can be done via [Configuration under Environments on AWS Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-softwaresettings.html#environments-cfg-softwaresettings-console). The environment variable is not visible to a user, so it can't be accessed via EC2 console because the environment variable is directly passed to the launching `npm start` command.
+
 ### Build Docker container (Optional)
 
 Create `Dockerfile` at the project root directory,
@@ -161,6 +163,19 @@ Then run to test it
 docker run -p 80:3000 bookmarkshare
 ```
 
+## Deploy
+
+We can either build static files locally and push to the git repo or let AWS build it for us. The latter allows to keep the repo clean and reduces its size.
+
+If you already pushed `build` files, then overwrite history with. The following command will delete `client/build` from git history and local files as well
+```
+git filter-branch --tree-filter "rm -rf client/build" --prune-empty HEAD
+```
+
+You will need to force change to push remote
+```
+git push -f origin master
+```
 
 ### AWS Beanstalk
 
@@ -193,12 +208,13 @@ ssh -o 'IdentitiesOnly yes' -i ~/Downloads/key.pem ec2-user@18.444.161.48
 ```
 We use `-o` options so that only the specified key is used, otherwise AWS will drop multiple attemps to authenticate. Also use IP address to avoid DNS issues.
 
+**Note**: When connecting to the EC2 instance via browser the user is can be `root`, but for ssh connection it is `ec2-user`.
 
 #### AWS CodePipeline
 
 Add github as a source for Codepipeline. When specifying buildspec leave the field empty so by default it looks for `buildspec.yml` at the project root directory.
 
-The `install` commands are run before `build`. The `artifacts` indicates which files to save and deploy after build is finished. The artifacts files are placed under `/var/app/current/` on AWS EC2 server, and launched with `npm start`.
+The `install` commands are run before `build`. The `artifacts` indicates which files to save and deploy after build is finished. The artifacts files are placed under `/var/app/current/` (older content is removed) on AWS EC2 server, and launched with `npm start`.
 
 ```
 # buildspec.yml
@@ -224,9 +240,11 @@ artifacts:
 
 **Note**: `**/*` means to recursively select all files
 
-If you get the following error, then change the version line to `version: 0.2`.
+If you get the following error, then change the version line to `version: 0.2` on `buildspec.yml`.
 ```
 [Container] 2021/06/03 06:13:19 YAML location is /codebuild/output/src233444839/src/buildspec.yml
 [Container] 2021/06/03 06:13:19 Phase complete: DOWNLOAD_SOURCE State: FAILED
 [Container] 2021/06/03 06:13:19 Phase context status code: YAML_FILE_ERROR Message: invalid buildspec `version` specified: 1.0, see documentation
 ```
+
+As an additional touch, change title of the website in `public/index.html` and `public/manifest.json` and replace `favicon.ico`.

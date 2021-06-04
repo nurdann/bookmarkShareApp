@@ -1,4 +1,4 @@
-import HomeIcon from "../Icons/HomeIcon"
+import HomeIcon from "../Icons/HomeIcon";
 
 const NavComponent = () => {
     return (
