@@ -248,3 +248,7 @@ If you get the following error, then change the version line to `version: 0.2` o
 ```
 
 As an additional touch, change title of the website in `public/index.html` and `public/manifest.json` and replace `favicon.ico`.
+
+## TO DO
+
+Fetch icon and page titles of URI
