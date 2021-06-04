@@ -16,8 +16,18 @@ app.use(cors());
 app.use(express.json());
 
 // Define functions for endpoints
+
+function isURICorrect(connectionString) {
+    const isNameRegex = /^[a-zA-Z0-9'_-]+$/;
+    return isNameRegex.test(connectionString);
+}
+
 async function fetchBookmarksFromURI(request, response) {
-    const uri = request.params.uri;
+    const uri = request.params.uri; 
+    if(!isURICorrect(uri)) {
+        response.status(400).json({'message': `Unable to add match regex pattern to ${uri}`});
+    }
+
     const bookmarks = await operationWithModel(async model => {
         if(await exists(model, uri)) {
             return (await getBookmarks(model, uri))?.bookmarks;
@@ -34,6 +44,10 @@ async function fetchBookmarksFromURI(request, response) {
 
 async function addBookmarkToURI(request, response) {
     const uri = request.params.uri;
+    if(!isURICorrect(uri)) {
+        response.status(400).json({'message': `Unable to add match regex pattern to ${uri}`});
+    }
+
     const {newBookmark} = request.body;
 
     const isAdded = await operationWithModel(async model => await addBookmark(model, uri, newBookmark));
@@ -47,6 +61,9 @@ async function addBookmarkToURI(request, response) {
 
 async function removeBookmarksFromURI(request, response) {
     const uri = request.params.uri;
+    if(!isURICorrect(uri)) {
+        response.status(400).json({'message': `Unable to add match regex pattern to ${uri}`});
+    }
 
     const isDropped = await operationWithModel(async model => await dropBookmarks(model, uri));
 
@@ -59,6 +76,10 @@ async function removeBookmarksFromURI(request, response) {
 
 async function removeBookmarkItemFromURI(request, response) {
     const uri = request.params.uri;
+    if(!isURICorrect(uri)) {
+        response.status(400).json({'message': `Unable to add match regex pattern to ${uri}`});
+    }
+
     const {rmBookmark} = request.body;
 
     const isRemoved = await operationWithModel(async model => await removeBookmarkItem(model, uri, rmBookmark));

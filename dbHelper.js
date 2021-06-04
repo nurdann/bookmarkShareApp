@@ -51,8 +51,12 @@ async function removeBookmarkItem(model, URI, bookmarkURI) {
     return removed ? true : false;
 }
 
-
 async function operationWithModel(operation) {
+    if(!process.env.MONGODB_URI) {
+        console.log('Unable to retrieve connection string for MongoDB');
+        return false;
+    }
+
     const db = mongoose.createConnection(process.env.MONGODB_URI, {
         useNewUrlParser: true, 
         useUnifiedTopology: true,
