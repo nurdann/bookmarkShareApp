@@ -121,3 +121,17 @@ button:focus {
   flex-direction: column;
 }
 
+button.delete-all-bookmarks {
+  position: relative;
+  box-sizing: border-box;
+}
+button.delete-all-bookmarks:hover::before {
+  content: 'Delete all bookmarks';
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 100px;
+  box-sizing: border-box;
+  background-color: black;
+  color: white;
+}

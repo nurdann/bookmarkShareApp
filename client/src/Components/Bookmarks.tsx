@@ -78,7 +78,7 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
             <form id="add-form" className="form-input-button">
                 <input type="text" id="add-bookmark-input" placeholder="Add bookmark" />
                 <button onClick={this.onSubmitAddBookmark}>Add</button>
-                <button onClick={this.removeBookmarks}>
+                <button onClick={this.removeBookmarks} className="delete-all-bookmarks">
                     <TrashIcon />
                 </button>
             </form>
