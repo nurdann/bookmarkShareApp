@@ -113,12 +113,11 @@ app.listen(process.env.API_PORT || 8000, (err) => {
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
     app.use(express.static(path.join(__dirname, 'client/build')));
 
-    app.get('*', function (req, res) {
+    app.get(`/(${bookmarkPattern})?`, function (req, res) {
         res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
     });
-} else {
-    // Wildcard place at the end
-    app.get('*', (request, response) => {
-        response.status(404).json({'message': 'Unknown API call'});
-    });
-}
+} 
+// Wildcard place at the end
+app.get('*', (request, response) => {
+    response.status(404).json({'message': 'Unknown API call'});
+});
