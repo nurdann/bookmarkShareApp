@@ -6,7 +6,8 @@
     "server": "nodemon server.js",
     "client": "cd client && npm start",
     "build": "cd client && npm run build",
-    "start": "pm2 start pm2.config.js"
+    "start": "./node_modules/pm2/bin/pm2-runtime pm2.config.js",
+    "poststart":  "node ./node_modules/pm2/bin/pm2 logs"
   },
   "dependencies": {
     "cors": "^2.8.5",

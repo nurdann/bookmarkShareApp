@@ -1,7 +1,7 @@
 module.exports = {
   apps : [
       {
-        name: "BookmarkShareApp",
+        name: "bookmarkshare",
         script: "./server.js",
         watch: true,
         env: {
