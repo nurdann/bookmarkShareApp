@@ -22,6 +22,10 @@ code {
   margin: 0 auto;
 }
 
+.page-body {
+  padding: 0 1em;
+}
+
 .nav {
   text-align: left;
   margin: .5em .5em 1em .5em;
@@ -121,6 +125,10 @@ button:focus {
   flex-direction: column;
 }
 
+.button-cluster button {
+  margin: 5px;
+}
+
 button.delete-all-bookmarks {
   position: relative;
   box-sizing: border-box;
@@ -142,4 +150,21 @@ button.delete-all-bookmarks:hover::before {
   -ms-user-select: all;
   user-select: all;
   cursor: pointer;
+}
+
+@media only screen and (max-width: 500px) {
+  .form-input-button,
+  .bookmark-list li {
+    flex-direction: column;
+  }
+
+  .button-cluster {
+    flex-direction: row;
+  }
+
+  .button-cluster button {
+    flex-grow: inherit;
+    flex: 1;
+  }
+
 }
