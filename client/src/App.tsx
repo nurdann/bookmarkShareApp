@@ -11,7 +11,6 @@ function App() {
         <NavComponent />
         <div className='page-body'>
           <Switch>
-            // Use 'exact' attribute to disable prefix matching
             <Route path='/' component={HomePage} exact />
             <Route component={BookmarkPage} />
           </Switch>
