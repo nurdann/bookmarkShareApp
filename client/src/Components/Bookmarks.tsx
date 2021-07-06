@@ -37,16 +37,11 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
         });
     }
 
-    removeBookmarkItem = (event : React.MouseEvent<HTMLElement>) : void => {
-        event.preventDefault();
-        const element = event.target as HTMLButtonElement;
-        if(element) {
-            const rmBookmark : string | null = element.getAttribute('data-bookmark');
-            if(rmBookmark) {
-                removeBookmarkItemFromUriAndFetch(this.state.bookmarkPage, rmBookmark).then((updatedBookmarks) => {
-                    this.setState({bookmarks: updatedBookmarks});
-                });
-            }
+    removeBookmarkItem = (bookmark : string) : void => {
+        if(bookmark) {
+            removeBookmarkItemFromUriAndFetch(this.state.bookmarkPage, bookmark).then((updatedBookmarks) => {
+                this.setState({bookmarks: updatedBookmarks});
+            });
         }
     }
 
@@ -59,16 +54,11 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
         });
     }
 
-    copyBookmarkToClipboard = (event : React.MouseEvent<HTMLElement>) : void => {
+    copyBookmarkToClipboard = (bookmark : string) : void => {
         // source: https://stackoverflow.com/a/30810322/1374078
-        if(!navigator.clipboard) {
-            console.log("navigator is not supported");
+        if(navigator.clipboard) {
+            navigator.clipboard.writeText(bookmark);
             return;
-        }
-        const element = event.target as HTMLButtonElement;
-        if(element) {
-            const bookmarkText = element.getAttribute('data-bookmark') as string;
-            navigator.clipboard.writeText(bookmarkText);
         }
     }
 
@@ -91,10 +81,10 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
                             <div>{bookmark}</div>
                         </div>
                         <div className="button-cluster">
-                            <button onClick={this.copyBookmarkToClipboard} data-bookmark={bookmark}>Copy</button>
-                            <button onClick={this.removeBookmarkItem} data-bookmark={bookmark}>
+                            <button onClick={() => this.copyBookmarkToClipboard(bookmark)}>Copy</button>
+                            <button onClick={() => this.removeBookmarkItem(bookmark)}> 
                                 <TrashIcon />
-                                </button>
+                            </button>
                         </div>
                     </li>
                 )}
