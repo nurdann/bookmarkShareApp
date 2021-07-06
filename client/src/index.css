@@ -128,10 +128,18 @@ button.delete-all-bookmarks {
 button.delete-all-bookmarks:hover::before {
   content: 'Delete all bookmarks';
   position: absolute;
-  left: 100%;
-  top: 0;
+  right: 0%;
+  bottom: 100%;
   width: 100px;
   box-sizing: border-box;
   background-color: black;
   color: white;
+}
+
+.bookmark-display div {
+  -webkit-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: all;
+  user-select: all;
+  cursor: pointer;
 }
