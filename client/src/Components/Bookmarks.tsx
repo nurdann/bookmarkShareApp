@@ -54,11 +54,23 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
         });
     }
 
-    copyBookmarkToClipboard = (bookmark : string) : void => {
+    copyBookmarkToClipboardOrSelect = (bookmark : string, event : React.MouseEvent<HTMLElement>) : void => {
         // source: https://stackoverflow.com/a/30810322/1374078
         if(navigator.clipboard) {
             navigator.clipboard.writeText(bookmark);
-            return;
+        } else {
+            const getSiblingByClass = function(classname : string, element : HTMLElement) {
+                const children = Array.from(element?.children) as Array<HTMLElement>;
+                for(let i = 0; i < children?.length; i++) {
+                    if(children[i].classList.contains(classname)) {
+                        return children[i];
+                    }
+                }
+                return null;
+            };
+            const parent = (event.target as HTMLElement).parentNode as HTMLElement;
+            const focusElement = getSiblingByClass('bookmark-display', parent.parentNode as HTMLElement) as HTMLElement;
+            window.getSelection()?.selectAllChildren(focusElement);
         }
     }
 
@@ -83,9 +95,7 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
                             <div>{bookmark}</div>
                         </div>
                         <div className="button-cluster">
-                            {navigator.clipboard &&
-                                <button onClick={() => this.copyBookmarkToClipboard(bookmark)}>Copy</button>
-                            }
+                            <button onClick={(e) => this.copyBookmarkToClipboardOrSelect(bookmark, e)}>Copy</button>
                             <button onClick={() => this.removeBookmarkItem(bookmark)}> 
                                 <TrashIcon />
                             </button>
