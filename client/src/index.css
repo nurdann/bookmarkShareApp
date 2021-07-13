@@ -122,7 +122,6 @@ button:focus {
 
 .button-cluster {
   display: flex;
-  flex-direction: column;
 }
 
 .button-cluster button {
