@@ -24,17 +24,26 @@ async function dropBookmarks(model, URI) {
 
 async function addBookmark(model, URI, bookmarkURI) {
     if(!await exists(model, URI)) { 
-        const created = await model.create({
+        const created = model.create({
             _id: URI,
             bookmarks: [bookmarkURI]
         });
 
-        return created ? true : false;
+        if(created) {
+            return true;
+        } else {
+            return false;
+        }
      }
 
     const updatedBookmark = await model.findByIdAndUpdate(URI, {
-        $push: {bookmarks: bookmarkURI}
-        });
+        $push: {
+            bookmarks: {
+                $each: [bookmarkURI],
+                $slice: -1000 // keep only the latest 1000 items
+            }
+        }
+    });
 
     return updatedBookmark ? true : false;
 }

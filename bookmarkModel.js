@@ -9,8 +9,10 @@ const BookmarkSchema = new Schema({
     _id: {
         type: String,
         maxLength: 2047,
-        validate: (s) => { bookmarkPatternRegex.test(s) },
-        message: (bookmarkUri) => `{props.value} is not a valid URI, must be alphanumeric or ['_-]`,
+        validate: {
+            validator: (id) => bookmarkPatternRegex.test(id),
+            message: (props) => `${props.value} is not a valid URI, must be alphanumeric or ['_-]`
+        },
         required: [true, 'Bookmark page URI is required']
     }, 
     bookmarks: {
@@ -18,11 +20,16 @@ const BookmarkSchema = new Schema({
             type: String,
             maxLength: 2047
         }],
-        validate: [(s) => s.length <= 100, '{PATH} exceeds the limit of 100']
+        required: true
     }
 });
 
 BookmarkSchema.virtual('uri').get(() => this._id);
+
+BookmarkSchema.pre('findOneAndUpdate', function(next) {
+    this.options.runValidators = true;
+    next();
+});
 
 module.exports = {
     BookmarkModel: mongoose.model('bookmark', BookmarkSchema, {collection: 'bookmarks', timestamps: true}),
