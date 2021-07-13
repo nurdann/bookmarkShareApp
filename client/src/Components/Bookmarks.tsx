@@ -11,14 +11,12 @@ import {
 
 type bookmarkStates = {
     bookmarkPage : string,
-    bookmarks : string[],
-    newBookmark : string
+    bookmarks : string[]
 }
 class Bookmarks extends React.Component<{}, bookmarkStates> {
     state = {
         bookmarkPage: document.location.pathname.substring(1),
-        bookmarks: [],
-        newBookmark: ''
+        bookmarks: []
     }
 
     componentDidMount() : void {
