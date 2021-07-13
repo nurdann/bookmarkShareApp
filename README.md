@@ -2,8 +2,8 @@
 
 Navigate to project folder and run the following commands to install dependencies
 ```
-$ npm ci
-$ cd client && npm ci
+$ npm install
+$ cd client && npm install
 ```
 
 And start development
