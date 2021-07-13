@@ -154,34 +154,6 @@ For continuous delivery, the better option is to create environment variable on 
 
 That can be done via [Configuration under Environments on AWS Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-softwaresettings.html#environments-cfg-softwaresettings-console). The environment variable is not visible to a user, so it can't be accessed via EC2 console because the environment variable is directly passed to the launching `npm start` command.
 
-### Build Docker container (Optional)
-
-Create `Dockerfile` at the project root directory,
-```
-# Dockerfile
-FROM  node:alpine
-
-RUN mkdir -p /usr/src/bookmarkShare
-WORKDIR /usr/src/bookmarkShare
-COPY . /usr/src/bookmarkShare/
-
-EXPOSE 3000/tcp
-
-RUN npm ci --only=production
-
-CMD ["npm", "run", "server:production"]
-```
-
-Then run build, the default file is `./Dockerfile`
-```
-docker build -t bookmarkshare .
-```
-
-Then run to test it
-```
-docker run -p 80:3000 bookmarkshare
-```
-
 ## Deploy
 
 We can either build static files locally and push to the git repo or let AWS build it for us. The latter allows to keep the repo clean and reduces its size.
