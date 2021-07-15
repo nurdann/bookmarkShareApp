@@ -55,16 +55,22 @@ async function addTitlesAndIcons(bookmarks) {
 async function getTitleAndIcon(bookmark) {
     // for checking URL
     // source: https://stackoverflow.com/a/43467144/1374078
-    let origin;
-    try {
-        const url = new URL(bookmark);
-        origin = url.origin;
-    } catch(e) {
+    const isUrl = function(url) {
+        try {
+            new URL(url);
+            return true;
+        } catch(e) {
+            return false;
+        }
+    }
+
+    if(!isUrl(bookmark)) {
         return [bookmark, '', ''];
     }
-    console.log(bookmark)
+
+    const origin = (new URL(bookmark)).origin;
+
     const response = await axios(bookmark);
-    
     if(response.status == 200) {
         const html = response.data;
         // match first shortest title tag
@@ -75,21 +81,26 @@ async function getTitleAndIcon(bookmark) {
         const faviconRegex = /<link\s+rel="(shortcut)?\s*icon"\s*href="(.*?)"\s*?\/?>/;
 
         let title = titleRegex.exec(html);
-        if(title !== null) { title = title[1]; }
-        
         let favicon = faviconRegex.exec(html);
-        if(favicon !== null) { favicon = favicon[2]; }
-        else { favicon = await getDefaultFavicon(origin); }
 
-        if(title === null && favicon === null) {
-            return [bookmark, '', ''];
-        } else if(favicon === null) {
-            return [bookmark, title, ''];
-        } else if(title === null) {
-            return [bookmark, '', favicon];
-        } else {
-            return [bookmark, title, favicon];
+        let titleStr = '';
+        let faviconStr = '';
+
+        if(title !== null) { 
+            titleStr = title[1]; 
         }
+        
+        if(favicon !== null) { 
+            if(isUrl(favicon[2])) {
+                faviconStr = favicon[2];
+            } else {
+                faviconStr = origin + favicon[2];
+            }
+        } else { 
+            faviconStr = await getDefaultFavicon(origin); 
+        }
+
+        return [bookmark, titleStr, faviconStr];
     } else {
         return [bookmark, '', ''];
     }
