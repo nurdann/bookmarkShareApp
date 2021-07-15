@@ -11,12 +11,13 @@ import {
 
 type bookmarkStates = {
     bookmarkPage : string,
-    bookmarks : string[]
+    bookmarks : Array<[string, string, string]>,
 }
+
 class Bookmarks extends React.Component<{}, bookmarkStates> {
     state = {
         bookmarkPage: document.location.pathname.substring(1),
-        bookmarks: []
+        bookmarks: [],
     }
 
     componentDidMount() : void {
@@ -67,8 +68,14 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
                 return null;
             };
             const parent = (event.target as HTMLElement).parentNode as HTMLElement;
-            const focusElement = getSiblingByClass('bookmark-display', parent.parentNode as HTMLElement) as HTMLElement;
-            window.getSelection()?.selectAllChildren(focusElement);
+            const focusParentElement = getSiblingByClass('bookmark-display', parent.parentNode as HTMLElement) as HTMLElement;
+            const selectElement = focusParentElement.querySelector('.bookmark-url') as HTMLElement;
+            const selection = window.getSelection();
+            const range = document.createRange();
+
+            range.selectNodeContents(selectElement);
+            selection?.removeAllRanges();
+            selection?.addRange(range);
         }
     }
 
@@ -87,10 +94,20 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
             
 
             <ul className="bookmark-list">
-                {this.state.bookmarks.map((bookmark, key) => 
+                {this.state.bookmarks.map((entry, key) => {
+                    //console.log(entry);
+                    const [bookmark, title, favicon] = entry;
+                    
+                    return (
                     <li key={key}>
                         <div className="bookmark-display">
-                            <div>{bookmark}</div>
+                            {favicon && <img src={favicon} alt="Bookmark icon" className="bookmark-icon"/> }
+                            <div className="bookmark-content">
+                                {title && <h4 className="bookmark-title">
+                                    <a href={bookmark}>{title}</a>
+                                </h4>}
+                                <div className="bookmark-url">{bookmark}</div>
+                            </div>
                         </div>
                         <div className="button-cluster">
                             <button onClick={(e) => this.copyBookmarkToClipboardOrSelect(bookmark, e)}>Copy</button>
@@ -99,6 +116,8 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
                             </button>
                         </div>
                     </li>
+                    );
+                    }
                 )}
             </ul>
         </>);

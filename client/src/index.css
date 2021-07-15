@@ -142,13 +142,13 @@ button.delete-all-bookmarks:hover::before {
   background-color: black;
   color: white;
 }
+.bookmark-display {
+  display: flex;
+}
 
-.bookmark-display div {
-  -webkit-user-select: all;
-  -moz-user-select: all;
-  -ms-user-select: all;
-  user-select: all;
-  cursor: pointer;
+.bookmark-icon {
+  width: 1em;
+  height: 1em;
 }
 
 @media only screen and (max-width: 500px) {

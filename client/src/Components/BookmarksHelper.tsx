@@ -1,7 +1,7 @@
 
 // Define API helper functions
 
-export async function getBookmarksFromUri(bookmarkPage : string) : Promise<string[]> {
+export async function getBookmarksFromUri(bookmarkPage : string) : Promise<Array<[string, string, string]>> {
     const result = await fetch(`/api/bookmark/${bookmarkPage}`);
     if(result?.status === 200) {
         return await result.json();
@@ -10,7 +10,7 @@ export async function getBookmarksFromUri(bookmarkPage : string) : Promise<strin
     }
 }
 
-export async function addBookmarkToUriAndFetch(bookmarkPage : string, newBookmark : string) : Promise<string[]> {
+export async function addBookmarkToUriAndFetch(bookmarkPage : string, newBookmark : string) : Promise<Array<[string, string, string]>> {
     const result = await fetch(`/api/bookmark/${bookmarkPage}/add`, {
         method: 'POST',
         body: JSON.stringify({
@@ -28,7 +28,7 @@ export async function addBookmarkToUriAndFetch(bookmarkPage : string, newBookmar
     }
 }
 
-export async function removeBookmarkItemFromUriAndFetch(bookmarkPage : string, rmBookmark : string) : Promise<string[]> {
+export async function removeBookmarkItemFromUriAndFetch(bookmarkPage : string, rmBookmark : string) : Promise<Array<[string, string, string]>> {
     const result = await fetch(`/api/bookmark/${bookmarkPage}/remove-item`, {
         method: 'POST',
         body: JSON.stringify({
