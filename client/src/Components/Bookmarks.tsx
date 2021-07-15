@@ -69,6 +69,8 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
             };
             const parent = (event.target as HTMLElement).parentNode as HTMLElement;
             const focusParentElement = getSiblingByClass('bookmark-display', parent.parentNode as HTMLElement) as HTMLElement;
+            
+            // source: https://stackoverflow.com/a/2838358/1374078
             const selectElement = focusParentElement.querySelector('.bookmark-url') as HTMLElement;
             const selection = window.getSelection();
             const range = document.createRange();
