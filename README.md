@@ -18,6 +18,12 @@ $ npm start
 ```
 
 
+## Configuration files
+
+- `package.json` keeps track of package dependencies
+- `pm2.config.js` provides environment variables for `pm2` command
+- `buildspec.yml` is a configuration for building application on AWS CodePipeline where `artifacts` are the retained files and folders after build
+
 # Walkthrough for creating React frontend with NodeJS backend
 
 The app was developed on Ubuntu 18.04 machine. 
@@ -240,8 +246,8 @@ If you get the following error, then change the version line to `version: 0.2` o
 
 As an additional touch, change title of the website in `public/index.html` and `public/manifest.json` and replace `favicon.ico`.
 
-## TO DO
+## Get webpage title and icon if bookmark is URL
 
-Using `navigator.clipboard` is only available for HTTPS and localhost connections.
+Using `navigator.clipboard` is only available for HTTPS and localhost connections. If it is not available, we can make use of `window.getSelection()` so that user themself can copy the selected text.
 
-Fetch icon and page titles of URI
+In order to fetch icon and page titles of webpage, its HTML page is searched for `<title>` and `<link rel="icon">` tags. This way our Express backend can respond with 3-tuple of bookmark, title and favicon URL texts.
