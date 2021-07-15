@@ -43,6 +43,8 @@ async function fetchBookmarksFromURI(request, response) {
 }
 
 async function addTitlesAndIcons(bookmarks) {
+    // Return promises in parallel
+    // source: https://stackoverflow.com/a/37576787
     return Promise.all(bookmarks.map(async (bookmark) => {
         return await getTitleAndIcon(bookmark);
     }));
