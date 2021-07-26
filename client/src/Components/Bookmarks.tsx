@@ -103,7 +103,7 @@ class Bookmarks extends React.Component<{}, bookmarkStates> {
                     return (
                     <li key={key}>
                         <div className="bookmark-display">
-                            {favicon && <img src={favicon} alt="Bookmark icon" className="bookmark-icon"/> }
+                            {favicon && <img src={favicon} alt="" className="bookmark-icon"/> }
                             <div className="bookmark-content">
                                 {title && <h4 className="bookmark-title">
                                     <a href={bookmark}>{title}</a>
