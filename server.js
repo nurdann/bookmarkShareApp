@@ -68,7 +68,7 @@ async function getTitleAndIcon(bookmark) {
 
     // check for response
     const instance = axios.create();
-    instance.defaults.timeout = 3000;
+    instance.defaults.timeout = 1000;
     let response;
     try {
         response = await instance.get(bookmark);
@@ -91,15 +91,39 @@ async function getTitleAndIcon(bookmark) {
         }
         
         let faviconStr = parseFaviconElement(html);
+        const origin = (new URL(bookmark)).origin;
         if(faviconStr !== '') { 
             if(!isUrl(faviconStr)) {
-                const origin = (new URL(bookmark)).origin;
                 faviconStr = origin + faviconStr;
             }
-        } 
+        } else {
+
+            faviconStr = await getDefaultFavicon(instance, origin);
+        }
         return [bookmark, titleStr, faviconStr];
     } else {
         return [bookmark, '', ''];
+    }
+}
+
+async function getDefaultFavicon(axios_instance, url) {
+    const fileExists = async function(url) {
+        try {
+            const response = await axios_instance.get(url, {method: 'HEAD'});
+            return response.status === 200;
+        } catch (response) {
+            if(response.code === 'ECONNABORTED') {
+                return false;
+            } else {
+                throw response;
+            }
+        }
+    }
+
+    if(await fileExists(url)) {
+        return url + '/favicon.ico';
+    } else {
+        return '';
     }
 }
 
