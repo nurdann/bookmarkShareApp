@@ -51,7 +51,6 @@ async function addTitlesAndIcons(bookmarks) {
 }
 
 // Treat bookmark as a URL to fetch HTML file and look for <title> and <link> tags to extract website title and icon location
-// If <link rel="icon"> does not exist, check for /favicon.ico file
 async function getTitleAndIcon(bookmark) {
     // for checking URL
     // source: https://stackoverflow.com/a/43467144/1374078
@@ -63,35 +62,41 @@ async function getTitleAndIcon(bookmark) {
             return false;
         }
     }
-
     if(!isUrl(bookmark)) {
         return [bookmark, '', ''];
     }
 
-    const origin = (new URL(bookmark)).origin;
+    // check for response
+    const instance = axios.create();
+    instance.defaults.timeout = 3000;
+    let response;
+    try {
+        response = await instance.get(bookmark);
+    } catch(response) {
+        if(response.code === 'ECONNABORTED') {
+            return [bookmark, '', ''];
+        } else {
+            throw err;
+        }
+    }
 
-    const response = await axios(bookmark);
     if(response.status == 200) {
         const html = response.data;
         // match first shortest title tag
         const titleRegex = /<title.*?>(.*?)<\/title>/;
         let title = titleRegex.exec(html);
-
         let titleStr = '';
-        let faviconStr = parseFaviconElement(html);
-
         if(title !== null) { 
             titleStr = title[1]; 
         }
         
+        let faviconStr = parseFaviconElement(html);
         if(faviconStr !== '') { 
             if(!isUrl(faviconStr)) {
+                const origin = (new URL(bookmark)).origin;
                 faviconStr = origin + faviconStr;
             }
-        } else { 
-            faviconStr = await getDefaultFavicon(origin); 
-        }
-
+        } 
         return [bookmark, titleStr, faviconStr];
     } else {
         return [bookmark, '', ''];
@@ -181,21 +186,6 @@ function parseFaviconElement(html) {
     }
 
     return "";
-}
-
-async function getDefaultFavicon(url) {
-    const favicon = url + '/favicon.ico';
-
-    const fileExists = async function(url) {
-            const response = await axios(url, {method: 'HEAD'});
-            return response.status === 200;
-    };
-
-    if(await fileExists(favicon)) {
-        return favicon;
-    } else {
-        return null;
-    }
 }
 
 async function addBookmarkToURI(request, response) {
