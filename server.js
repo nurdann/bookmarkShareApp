@@ -74,27 +74,19 @@ async function getTitleAndIcon(bookmark) {
     if(response.status == 200) {
         const html = response.data;
         // match first shortest title tag
-        const titleRegex = /<title>(.*?)<\/title>/;
-        // e.g. 
-        // <link rel="icon" href="">
-        // <link rel="shortcut icon" href="">
-        const faviconRegex = /<link\s+rel="(shortcut)?\s*icon"\s*href="(.*?)"\s*?\/?>/;
-
+        const titleRegex = /<title.*?>(.*?)<\/title>/;
         let title = titleRegex.exec(html);
-        let favicon = faviconRegex.exec(html);
 
         let titleStr = '';
-        let faviconStr = '';
+        let faviconStr = parseFaviconElement(html);
 
         if(title !== null) { 
             titleStr = title[1]; 
         }
         
-        if(favicon !== null) { 
-            if(isUrl(favicon[2])) {
-                faviconStr = favicon[2];
-            } else {
-                faviconStr = origin + favicon[2];
+        if(faviconStr !== '') { 
+            if(!isUrl(faviconStr)) {
+                faviconStr = origin + faviconStr;
             }
         } else { 
             faviconStr = await getDefaultFavicon(origin); 
@@ -106,12 +98,97 @@ async function getTitleAndIcon(bookmark) {
     }
 }
 
+function parseFaviconElement(html) {
+    // e.g. 
+    // <link rel="icon" href="">
+    // <link rel="shortcut icon" href="">
+    // Regex is not adequate if there are other attributes or their order change
+    // const faviconRegex = /<link\s+rel="(shortcut)?\s*icon"\s*href="(.*?)"\s*?\/?>/;
+    /*
+        element -> < name { attr (= " val ")? } >
+    */
+    const isWhitespace = (char) => {
+        return /\s/.test(char);
+    }
+
+    const isAlpha = (char) => {
+        return /[0-9a-zA-Z]/.test(char);
+    }
+
+    const parseAttrs = (html, cursor, acc) => {
+        while(cursor < html.length && html[cursor] !== '>') {
+
+            // skip whitespace
+            while(cursor < html.length && isWhitespace(html[cursor])) {
+                cursor++;
+            }
+
+            // get attribute name
+            let attrName = "";
+            while(cursor < html.length && isAlpha(html[cursor])) {
+                attrName += html[cursor];
+                cursor++;
+            }
+
+            if(cursor + 1 >= html.length || html[cursor] !== "=") {
+                cursor++;
+                continue;
+            }
+
+            cursor++; // consume '='
+
+            if(html[cursor] === '"') {
+                cursor++; // consume opening '"'
+                let attrVal = "";
+                while(cursor < html.length && html[cursor] !== '"') {
+                    attrVal += html[cursor];
+                    cursor++;
+                }
+
+                cursor++; // consume closing '"'
+                acc[attrName] = attrVal;
+            } else {
+                cursor++;
+            }
+        }
+
+        return cursor;
+    }
+
+    let cursor = 0;
+    while(cursor < html.length) {
+        // look for only opening HTML tags
+        if(cursor + 1 < html.length && html[cursor] === "<" && html[cursor + 1] !== '/') {
+            cursor++; // consume '<'
+            let tagname = "";
+            while(cursor < html.length && isAlpha(html[cursor])) {
+                tagname += html[cursor];
+                cursor++;
+            }
+
+            if(tagname === "link") {
+                const attrs = {};
+                cursor = parseAttrs(html, cursor, attrs);
+                // e.g. <link rel="shortcut icon" href="">
+                if("rel" in attrs && "href" in attrs 
+                    && (attrs["rel"] === "icon" || attrs["rel"] === "shortcut icon")) {
+                    return attrs["href"];
+                }
+            }
+           
+        }
+        cursor++;
+    }
+
+    return "";
+}
+
 async function getDefaultFavicon(url) {
     const favicon = url + '/favicon.ico';
 
     const fileExists = async function(url) {
-        const response = await axios(url, {method: 'HEAD'});
-        return response.status === 200;
+            const response = await axios(url, {method: 'HEAD'});
+            return response.status === 200;
     };
 
     if(await fileExists(favicon)) {
